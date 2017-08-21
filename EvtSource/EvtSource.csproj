@@ -2,6 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>3v.EvtSource</PackageId>
+    <PackageVersion>1.0.0</PackageVersion>
+    <Authors>3v</Authors>
+    <Description>Server-Sent Events client implementation for .net core</Description>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageLicenseUrl>https://github.com/3ventic/EvtSource/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/3ventic/EvtSource</PackageProjectUrl>
   </PropertyGroup>
 
 </Project>

@@ -23,6 +23,7 @@ namespace EvtSource
         private Task Reader = Task.CompletedTask;
 
         private int ReconnectDelay = 3000;
+        private string LastEventId = string.Empty;
 
         public event MessageReceivedHandler MessageReceived;
         public event DisconnectEventHandler Disconnected;
@@ -70,6 +71,10 @@ namespace EvtSource
         {
             try
             {
+                if (string.Empty != LastEventId)
+                {
+                    Hc.DefaultRequestHeaders.TryAddWithoutValidation("Last-Event-Id", LastEventId);
+                }
                 using (HttpResponseMessage response = await Hc.GetAsync(Uri, HttpCompletionOption.ResponseHeadersRead))
                 {
                     response.EnsureSuccessStatusCode();
@@ -116,23 +121,26 @@ namespace EvtSource
                                 dataIndex += 1;
                             }
 
+                            string value = line.Substring(dataIndex).Trim();
+
                             switch (field)
                             {
                                 case "event":
                                     // Set event type
-                                    evt = line.Substring(dataIndex);
+                                    evt = value;
                                     break;
                                 case "data":
                                     // Append a line to data using a single \n as EOL
-                                    data.Append($"{line.Substring(dataIndex)}\n");
+                                    data.Append($"{value}\n");
                                     break;
                                 case "retry":
                                     // Set reconnect delay for next disconnect
-                                    int.TryParse(line.Substring(dataIndex).Trim(), out ReconnectDelay);
+                                    int.TryParse(value, out ReconnectDelay);
                                     break;
                                 case "id":
                                     // Set ID
-                                    id = line.Substring(dataIndex).Trim();
+                                    LastEventId = value;
+                                    id = LastEventId;
                                     break;
                                 default:
                                     // Ignore other fields

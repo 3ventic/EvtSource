@@ -5,7 +5,8 @@
     <PackageId>3v.EvtSource</PackageId>
     <PackageVersion>1.0.1</PackageVersion>
     <Authors>3v</Authors>
-    <Description>Server-Sent Events client implementation for .net core</Description>
+    <Description>Server-Sent Events (SSE) client implementation for .net core and .net standard</Description>
+    <PackageTags>SSE server-sent events core text/event-stream EventSource</PackageTags>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageLicenseUrl>https://github.com/3ventic/EvtSource/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/3ventic/EvtSource</PackageProjectUrl>

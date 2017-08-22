@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netstandard1.4;netcoreapp1.0;netcoreapp1.1;netcoreapp2.0</TargetFrameworks>
     <PackageId>3v.EvtSource</PackageId>
-    <PackageVersion>1.0.0</PackageVersion>
+    <PackageVersion>1.0.1</PackageVersion>
     <Authors>3v</Authors>
     <Description>Server-Sent Events client implementation for .net core</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>

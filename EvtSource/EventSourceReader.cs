@@ -10,6 +10,8 @@ namespace EvtSource
 {
     public class EventSourceReader : IDisposable
     {
+        private const string DefaultEventType = "message";
+
         public delegate void MessageReceivedHandler(object sender, EventSourceMessageEventArgs e);
         public delegate void DisconnectEventHandler(object sender, DisconnectEventArgs e);
 
@@ -79,7 +81,7 @@ namespace EvtSource
                     Stream = await response.Content.ReadAsStreamAsync();
                     using (StreamReader sr = new StreamReader(Stream))
                     {
-                        string evt = string.Empty;
+                        string evt = DefaultEventType;
                         string id = string.Empty;
                         StringBuilder data = new StringBuilder(string.Empty);
 
@@ -89,9 +91,10 @@ namespace EvtSource
                             if (line == string.Empty)
                             {
                                 // double newline, dispatch message and reset for next
-                                MessageReceived?.Invoke(this, new EventSourceMessageEventArgs(data.ToString(), evt, id));
+                                MessageReceived?.Invoke(this, new EventSourceMessageEventArgs(data.ToString().Trim(), evt, id));
                                 data.Clear();
                                 id = string.Empty;
+                                evt = DefaultEventType;
                                 continue;
                             }
                             else if (line.First() == ':')
@@ -101,8 +104,17 @@ namespace EvtSource
                             }
 
                             int dataIndex = line.IndexOf(':');
-                            string field = line.Substring(0, dataIndex);
-                            dataIndex += 2;
+                            string field;
+                            if (dataIndex == -1)
+                            {
+                                dataIndex = line.Length;
+                                field = line;
+                            }
+                            else
+                            {
+                                field = line.Substring(0, dataIndex);
+                                dataIndex += 1;
+                            }
 
                             switch (field)
                             {
@@ -116,11 +128,11 @@ namespace EvtSource
                                     break;
                                 case "retry":
                                     // Set reconnect delay for next disconnect
-                                    int.TryParse(line.Substring(dataIndex), out ReconnectDelay);
+                                    int.TryParse(line.Substring(dataIndex).Trim(), out ReconnectDelay);
                                     break;
                                 case "id":
                                     // Set ID
-                                    id = line.Substring(dataIndex);
+                                    id = line.Substring(dataIndex).Trim();
                                     break;
                                 default:
                                     // Ignore other fields

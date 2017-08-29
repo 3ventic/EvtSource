@@ -148,13 +148,19 @@ namespace EvtSource
                             }
                         }
                     }
-                    Disconnected?.Invoke(this, new DisconnectEventArgs(ReconnectDelay, null));
+                    Disconnect(null);
                 }
             }
             catch (Exception ex)
             {
-                Disconnected?.Invoke(this, new DisconnectEventArgs(ReconnectDelay, ex));
+                Disconnect(ex);
             }
+        }
+
+        private void Disconnect(Exception ex)
+        {
+            Disconnected?.Invoke(this, new DisconnectEventArgs(ReconnectDelay, ex));
+            Reader = Task.CompletedTask;
         }
     }
 }

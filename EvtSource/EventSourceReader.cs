@@ -20,7 +20,8 @@ namespace EvtSource
         private Uri Uri;
 
         private volatile bool IsDisposed = false;
-        private Task Reader = Task.CompletedTask;
+        private volatile bool IsReading = false;
+        private object StartLock = new object();
 
         private int ReconnectDelay = 3000;
         private string LastEventId = string.Empty;
@@ -46,10 +47,16 @@ namespace EvtSource
             {
                 throw new ObjectDisposedException("EventSourceReader");
             }
-            if (Reader.Status == TaskStatus.RanToCompletion || Reader.Status == TaskStatus.Faulted)
+            lock (StartLock)
             {
-                // Only start a new one if one isn't already running
-                Reader = ReaderAsync();
+                if (IsReading == false)
+                {
+                    IsReading = true;
+                    // Only start a new one if one isn't already running
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                    ReaderAsync();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                }
             }
             return this;
         }
@@ -159,8 +166,8 @@ namespace EvtSource
 
         private void Disconnect(Exception ex)
         {
+            IsReading = false;
             Disconnected?.Invoke(this, new DisconnectEventArgs(ReconnectDelay, ex));
-            Reader = Task.CompletedTask;
         }
     }
 }

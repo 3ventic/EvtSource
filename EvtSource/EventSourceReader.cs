@@ -15,7 +15,7 @@ namespace EvtSource
         public delegate void MessageReceivedHandler(object sender, EventSourceMessageEventArgs e);
         public delegate void DisconnectEventHandler(object sender, DisconnectEventArgs e);
 
-        private static HttpClient Hc = new HttpClient();
+        private HttpClient Hc = new HttpClient();
         private Stream Stream = null;
         private Uri Uri;
 

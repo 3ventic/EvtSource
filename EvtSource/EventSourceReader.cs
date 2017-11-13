@@ -19,7 +19,12 @@ namespace EvtSource
         private Stream Stream = null;
         private Uri Uri;
 
-        private volatile bool IsDisposed = false;
+        private volatile bool _IsDisposed = false;
+        public bool IsDisposed
+        {
+            get { return _IsDisposed; }
+        }
+
         private volatile bool IsReading = false;
         private object StartLock = new object();
 
@@ -43,7 +48,7 @@ namespace EvtSource
         /// <exception cref="ObjectDisposedException">Dispose() has been called</exception>
         public EventSourceReader Start()
         {
-            if (IsDisposed)
+            if (_IsDisposed)
             {
                 throw new ObjectDisposedException("EventSourceReader");
             }
@@ -67,7 +72,7 @@ namespace EvtSource
         /// </summary>
         public void Dispose()
         {
-            IsDisposed = true;
+            _IsDisposed = true;
             Stream?.Dispose();
             Hc.CancelPendingRequests();
             Hc.Dispose();

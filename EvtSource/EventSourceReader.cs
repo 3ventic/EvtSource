@@ -85,6 +85,11 @@ namespace EvtSource
             {
                 if (string.Empty != LastEventId)
                 {
+                    if (Hc.DefaultRequestHeaders.Contains("Last-Event-Id"))
+                    {
+                        Hc.DefaultRequestHeaders.Remove("Last-Event-Id");
+                    }
+                    
                     Hc.DefaultRequestHeaders.TryAddWithoutValidation("Last-Event-Id", LastEventId);
                 }
                 using (HttpResponseMessage response = await Hc.GetAsync(Uri, HttpCompletionOption.ResponseHeadersRead))

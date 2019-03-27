@@ -15,9 +15,9 @@ namespace EvtSource
         public delegate void MessageReceivedHandler(object sender, EventSourceMessageEventArgs e);
         public delegate void DisconnectEventHandler(object sender, DisconnectEventArgs e);
 
-        private HttpClient Hc = new HttpClient();
+        private HttpClient Hc;
         private Stream Stream = null;
-        private Uri Uri;
+        private readonly Uri Uri;
 
         private volatile bool _IsDisposed = false;
         public bool IsDisposed => _IsDisposed;
@@ -35,7 +35,12 @@ namespace EvtSource
         /// An instance of EventSourceReader
         /// </summary>
         /// <param name="url">URL to listen from</param>
-        public EventSourceReader(Uri url) => Uri = url;
+        /// <param name="handler">An optional custom handler for HttpClient</param>
+        public EventSourceReader(Uri url, HttpMessageHandler handler = null)
+        {
+            Uri = url;
+            Hc = new HttpClient(handler ?? new HttpClientHandler());
+        }
 
 
         /// <summary>

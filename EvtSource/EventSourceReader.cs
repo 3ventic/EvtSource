@@ -20,13 +20,10 @@ namespace EvtSource
         private Uri Uri;
 
         private volatile bool _IsDisposed = false;
-        public bool IsDisposed
-        {
-            get { return _IsDisposed; }
-        }
+        public bool IsDisposed => _IsDisposed;
 
         private volatile bool IsReading = false;
-        private object StartLock = new object();
+        private readonly object StartLock = new object();
 
         private int ReconnectDelay = 3000;
         private string LastEventId = string.Empty;
@@ -101,11 +98,11 @@ namespace EvtSource
                     }
 
                     Stream = await response.Content.ReadAsStreamAsync();
-                    using (StreamReader sr = new StreamReader(Stream))
+                    using (var sr = new StreamReader(Stream))
                     {
                         string evt = DefaultEventType;
                         string id = string.Empty;
-                        StringBuilder data = new StringBuilder(string.Empty);
+                        var data = new StringBuilder(string.Empty);
 
                         while (!sr.EndOfStream)
                         {

@@ -11,6 +11,7 @@ Prepares the HTTP client.
 | arg name | description |
 | --- | --- |
 | url | _(required)_ URL to a text/event-stream URL |
+| handler | _(optional)_ An instance of HttpMessageHandler |
 
 ## Methods
 

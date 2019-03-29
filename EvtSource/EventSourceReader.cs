@@ -115,7 +115,10 @@ namespace EvtSource
                             if (line == string.Empty)
                             {
                                 // double newline, dispatch message and reset for next
-                                MessageReceived?.Invoke(this, new EventSourceMessageEventArgs(data.ToString().Trim(), evt, id));
+                                if (data.Length > 0)
+                                {
+                                    MessageReceived?.Invoke(this, new EventSourceMessageEventArgs(data.ToString().Trim(), evt, id));
+                                }
                                 data.Clear();
                                 id = string.Empty;
                                 evt = DefaultEventType;

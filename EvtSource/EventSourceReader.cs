@@ -109,7 +109,7 @@ namespace EvtSource
                         string id = string.Empty;
                         var data = new StringBuilder(string.Empty);
 
-                        while (!sr.EndOfStream)
+                        while (true)
                         {
                             string line = await sr.ReadLineAsync();
                             if (line == string.Empty)
@@ -170,7 +170,6 @@ namespace EvtSource
                             }
                         }
                     }
-                    Disconnect(null);
                 }
             }
             catch (Exception ex)

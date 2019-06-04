@@ -11,6 +11,7 @@ namespace EvtSource
     public class EventSourceReader : IDisposable
     {
         private const string DefaultEventType = "message";
+        private const string EventStreamMimeType = "text/event-stream";
 
         public delegate void MessageReceivedHandler(object sender, EventSourceMessageEventArgs e);
         public delegate void DisconnectEventHandler(object sender, DisconnectEventArgs e);
@@ -80,7 +81,6 @@ namespace EvtSource
             Hc.Dispose();
         }
 
-
         private async Task ReaderAsync()
         {
             try
@@ -92,12 +92,13 @@ namespace EvtSource
                         Hc.DefaultRequestHeaders.Remove("Last-Event-Id");
                     }
                     
+                    Hc.DefaultRequestHeaders.TryAddWithoutValidation("Accept", EventStreamMimeType);
                     Hc.DefaultRequestHeaders.TryAddWithoutValidation("Last-Event-Id", LastEventId);
                 }
                 using (HttpResponseMessage response = await Hc.GetAsync(Uri, HttpCompletionOption.ResponseHeadersRead))
                 {
                     response.EnsureSuccessStatusCode();
-                    if (response.Headers.TryGetValues("content-type", out IEnumerable<string> ctypes) || ctypes?.Contains("text/event-stream") == false)
+                    if (response.Headers.TryGetValues("content-type", out IEnumerable<string> ctypes) || ctypes?.Contains(EventStreamMimeType) == false)
                     {
                         throw new ArgumentException("Specified URI does not return server-sent events");
                     }

@@ -36,12 +36,20 @@ namespace EvtSource
         /// </summary>
         /// <param name="url">URL to listen from</param>
         /// <param name="handler">An optional custom handler for HttpClient</param>
-        public EventSourceReader(Uri url, HttpMessageHandler handler = null)
+        public EventSourceReader(Uri url, HttpMessageHandler handler = null) : this(url, new HttpClient(handler ?? new HttpClientHandler()))
         {
-            Uri = url;
-            Hc = new HttpClient(handler ?? new HttpClientHandler());
         }
 
+        /// <summary>
+        /// An instance of EventSourceReader
+        /// </summary>
+        /// <param name="url">URL to listen from</param>
+        /// <param name="httpClient">Instance of http client</param>
+        public EventSourceReader(Uri url, HttpClient httpClient)
+        {
+            Uri = url;
+            Hc = httpClient;
+        }
 
         /// <summary>
         /// Returns instantly and starts listening

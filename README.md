@@ -8,9 +8,9 @@ Available from nuget as `3v.EvtSource`.
 
 ```cs
 var evt = new EventSourceReader(new Uri("https://example.com/some/url/to/SSE")).Start();
-evt.MessageReceived += (object sender, EventSourceMessageEventArgs) => Console.WriteLine($"{e.Event} : {e.Message}");
+evt.MessageReceived += (object sender, EventSourceMessageEventArgs e) => Console.WriteLine($"{e.Event} : {e.Message}");
 evt.Disconnected += async (object sender, DisconnectEventArgs e) => {
-    Console.WriteLine($"Retry: {e.ReconnectDelay} - Error: {e.Message}");
+    Console.WriteLine($"Retry: {e.ReconnectDelay} - Error: {e.Exception}");
     await Task.Delay(e.ReconnectDelay);
     evt.Start(); // Reconnect to the same URL
 };
